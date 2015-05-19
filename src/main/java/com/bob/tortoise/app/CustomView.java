@@ -48,7 +48,7 @@ public class CustomView extends View implements Runnable, SensorEventListener {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if (!isHide) {
+        if (!isHide) {//有待重构
             paint.setColor(Color.BLACK);
             canvas.drawCircle(body[0], body[1] - 250, 85, paint);//head edge
             paint.setColor(Color.GREEN);
@@ -67,7 +67,7 @@ public class CustomView extends View implements Runnable, SensorEventListener {
 
             paint.setColor(Color.BLACK);
             eyeCount++;
-            if (eyeCount % 10 == 0) {//眼睛的选择性绘制
+            if (eyeCount % 10 == 0) {//眼睛的选择性绘制，每刷新10次更眨一次眼睛
                 canvas.drawLine(body[0] - 35, body[1] - 265, body[0] - 25, body[1] - 265, paint);
                 canvas.drawLine(body[0] + 25, body[1] - 265, body[0] + 35, body[1] - 265, paint);
             } else {
@@ -92,7 +92,6 @@ public class CustomView extends View implements Runnable, SensorEventListener {
     }
 
     public void hide() {
-
         isHide = true;
     }
 
@@ -182,8 +181,13 @@ public class CustomView extends View implements Runnable, SensorEventListener {
                     temp = Constants.DIRECTION.DOWN;
 
         }
-        if (temp != direction){//防止同方向还进行方向重置
+        if (temp != direction) {//防止同方向还进行方向重置
             direction = temp;
+
+            /**
+             * 重新将身体和四肢进行同步，否则在多次转换方向之后四肢和身体
+             * 之间容易因为 hz ms的时间差而导致的坐标上的偏差，日积月累，然后面目全非
+             */
             foot[0] = body[0];
             foot[1] = body[1];
         }
